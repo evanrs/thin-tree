@@ -1,3 +1,4 @@
+'use strict';
 var _ = require('lodash');
 
 
@@ -68,20 +69,18 @@ ThinTree.prototype.toJSON = function() {
 
 
 ThinTree.extend = function(proto) {
-    var Fn = __extends(proto, ThinTree);
-    return Fn;
-}
+    return __extends(proto, this);
+};
 
 
 module.exports = ThinTree;
 
 
 var __hasProp = {}.hasOwnProperty;
-var __extends = function(protoTripe, Parent) {
+var __extends = function(proto, Parent) {
     function Child() {
         Child.__super__.constructor.apply(this, arguments);
     };
-    _.assign(Child.prototype, protoTripe);
 
     for (var key in Parent) {
         if (__hasProp.call(Parent, key)) Child[key] = Parent[key];
@@ -92,7 +91,12 @@ var __extends = function(protoTripe, Parent) {
     }
     Ctor.prototype = Parent.prototype;
     Child.prototype = new Ctor();
+    _.assign(Child.prototype, proto);
     Child.__super__ = Parent.prototype;
+
+    // Child.extend = function(proto) {
+    //     return __extends(proto, this);
+    // }
 
     return Child;
 };
