@@ -1,4 +1,3 @@
 thin-tree
 =========
-
-Thin tree is a tool for build recursive structures/
+Thin tree helps build recursive structures.
