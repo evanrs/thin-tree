@@ -1,0 +1,27 @@
+{
+  "name": "thin-tree",
+  "version": "0.0.0",
+  "homepage": "https://github.com/evanrs/thin-tree",
+  "authors": [
+    "Evan Schneider <evanrs@gmail.com>"
+  ],
+  "description": "Thin tree helps build recursive structures.",
+  "main": "build/main.js",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "recursive",
+    "tree",
+    "structure"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ]
+}
