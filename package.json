@@ -1,7 +1,7 @@
 {
-  "name": "thintree",
+  "name": "thin-tree",
   "version": "0.0.0",
-  "description": "A tool for recursive structures.",
+  "description": "Thin tree helps build recursive structures.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
