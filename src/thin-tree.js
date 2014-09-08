@@ -92,11 +92,8 @@ var __extends = function(proto, Parent) {
     Ctor.prototype = Parent.prototype;
     Child.prototype = new Ctor();
     _.assign(Child.prototype, proto);
-    Child.__super__ = Parent.prototype;
-
-    // Child.extend = function(proto) {
-    //     return __extends(proto, this);
-    // }
+    Child.prototype.__model__ = Child;
+    Child.prototype.__super__ = Child.__super__ =  Parent.prototype;
 
     return Child;
 };

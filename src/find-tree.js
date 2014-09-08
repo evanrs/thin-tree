@@ -1,4 +1,6 @@
 'use strict';
+var _ = require('lodash');
+
 var TT = require('./thin-tree');
 var Collection = require('./collection');
 
