@@ -34,6 +34,9 @@ ThinTree.prototype.flatten = function() {
     :   this._memo.flattened;
 }
 
+ThinTree.prototype.selectModel = function() {
+    return this.constructor;
+}
 
 ThinTree.prototype.setChildren = function() {
     var self = this;
@@ -43,10 +46,12 @@ ThinTree.prototype.setChildren = function() {
     }
     if(_.isArray(this.children)){
         // Creates node for each child element
-        this.children = _.map(this.children, function (node) {
+        _.each(this.children, function (node, index) {
+            var Model = this.selectModel(node);
             // Pass new object with current node properties, set the parent and root
-            return new self.constructor( _.assign({}, node, properties));
-        });
+            return this.children[index] =
+                new Model(_.assign({}, node, properties));
+        }, this);
     }
 }
 

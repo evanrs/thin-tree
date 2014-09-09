@@ -6,7 +6,7 @@ var Collection = require('./collection');
 
 var FindTree = TT.extend({
     index: function() {
-        return this.parent.indexOf(this);
+        return this.parent && this.parent.indexOf(this);
     }
 });
 
