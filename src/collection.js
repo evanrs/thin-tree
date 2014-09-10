@@ -2,7 +2,8 @@
 var _ = require('lodash');
 
 function Collection() {
-    this.children = [];
+    this._collectionKey = 'children';
+    this[this._collectionKey] = [];
 }
 
 var collectionMethods = [
@@ -38,9 +39,9 @@ var collectionMethods = [
     ];
 
 _.each(collectionMethods, function(method) {
-    Collection.prototype[method] = function(identity, search) {
+    Collection.prototype[method] = function() {
         var args = _.toArray(arguments);
-        args.unshift(search || this.children);
+        args.unshift(this[this._collectionKey]);
         return _[method].apply(_, args);
     }
 });
