@@ -15,44 +15,52 @@ var ThinTree = function(node) {
 ThinTree.prototype.initialize = function(node) {
     // Assigns element, other options and defaults
     _.assign(this, node);
-
-    // Initializes root
-    if (_.isEmpty(this.parent)) {
-        this.root = this;
-    }
-
-    this.setChildren();
-    this._memo = {};
+    _.defaults(this, {
+        root: this, // self reference root if not present
+        _key: 'children' // set the collection key
+    });
+    // Recursively creates descendant nodes
+    this.addChildren();
 }
 
 
 ThinTree.prototype.flatten = function() {
-    return _.isUndefined(this._memo.flattened) ?
-        this._memo.flattened = _.reduce(this.children,
-            function(accumulator, node) {
-                return accumulator.concat(node.flatten()); }, [this])
-    :   this._memo.flattened;
+    return this._flattened = this._flattened || _.reduce(
+        this.getChildren(),
+        function(accumulator, node) {
+            return accumulator.concat(node.flatten()); },
+        [this]
+    );
 }
 
-ThinTree.prototype.selectModel = function() {
-    return this.constructor;
+
+ThinTree.prototype.getChildren = function() {
+    return this[this._key];
 }
 
-ThinTree.prototype.setChildren = function() {
-    var self = this;
-    var properties = {
-        root: this.root,
-        parent: this
-    }
-    if(_.isArray(this.children)){
-        // Creates node for each child element
-        _.each(this.children, function (node, index) {
-            var Model = this.selectModel(node);
-            // Pass new object with current node properties, set the parent and root
-            return this.children[index] =
-                new Model(_.assign({}, node, properties));
-        }, this);
-    }
+
+ThinTree.prototype.setChildren = function(children) {
+    return this[this._key] = children;
+}
+
+
+ThinTree.prototype.addChild = function(node, index) {
+    if (_.isPlainObject(node)) {
+        node = new this.constructor(node); }
+    index = _.isNumber(index) ? index : this.getChildren().length;
+    return this.getChildren()[index] = node;
+}
+
+
+ThinTree.prototype.addChildren = function() {
+    // Creates node for each child element
+    return _.map(this.getChildren(), function (node, index) {
+        // Set the parent and root
+        node = _.defaults({ parent: this, root: this.root }, node);
+        // Pass new object with current node properties
+        return this.addChild(node, index);
+    // Pass in context as last parameter of function call
+    }, this);
 }
 
 
@@ -66,20 +74,89 @@ ThinTree.prototype.toJSON = function() {
     .value();
 
     obj.parent = this.parent ? this.parent.uuid : null;
-    if (_.isEmpty(obj.children))
-        obj.children = null;
+    if (_.isEmpty(obj.getChildren())) {
+        obj.setChildren(null);
+    }
 
     return obj;
 };
 
 
-ThinTree.extend = function(proto) {
-    return __extends(proto, this);
+///////////////////////////////////////////////////////////////////////////////
+///
+///                         Collection Methods
+///
+///////////////////////////////////////////////////////////////////////////////
+
+
+var collectionMethods = [
+        'chain',
+        /**
+         * Collection Methods
+         */
+        'at', 'contains', 'countBy', 'every', 'filter', 'find', 'findLast',
+        'forEach', 'forEachRight', 'groupBy', 'indexBy', 'invoke', 'map',
+        'max', 'min', 'pluck', 'reduce', 'reduceRight', 'reject', 'sample',
+        'shuffle', 'size', 'some', 'sortBy', 'toArray', 'where',
+        /**
+         * Object method
+         */
+        'transform',
+        /**
+         * Array methods, sorted by type of operation
+         */
+        'indexOf', 'lastIndexOf',
+        'findIndex', 'findLastIndex',
+        'first', 'last',
+        'initial', 'rest',
+        'difference', 'intersection', 'union', 'uniq', 'without', 'xor',
+        'sortedIndex',
+        /**
+         * Not applicable or destructive
+            'flatten',
+            'range',
+            'compact',
+            'pull', 'remove',
+            'zip', 'zipObject'
+         */
+    ];
+
+_.each(collectionMethods, function(method) {
+    ThinTree.prototype[method] = function() {
+        var args = _.toArray(arguments);
+        args.unshift(this.getChildren());
+        return _[method].apply(_, args);
+    }
+});
+
+
+///////////////////////////////////////////////////////////////////////////////
+///
+///                         Attribute Methods
+///
+///////////////////////////////////////////////////////////////////////////////
+
+
+_.each(['assign', 'defaults', 'has', 'omit', 'pick'], function(method) {
+    ThinTree.prototype[method] = function() {
+        var args = _.toArray(arguments);
+        args.unshift(this);
+        return _[method].apply(_, args);
+    }
+});
+
+
+///////////////////////////////////////////////////////////////////////////////
+///
+///                             Inheritance
+///
+///////////////////////////////////////////////////////////////////////////////
+
+ThinTree.extend = function(proto, statics) {
+    var Model = __extends(proto, this);
+    _.assign(Model, statics)
+    return Model;
 };
-
-
-module.exports = ThinTree;
-
 
 var __hasProp = {}.hasOwnProperty;
 var __extends = function(proto, Parent) {
@@ -98,7 +175,16 @@ var __extends = function(proto, Parent) {
     Child.prototype = new Ctor();
     _.assign(Child.prototype, proto);
     Child.prototype.__model__ = Child;
-    Child.prototype.__super__ = Child.__super__ =  Parent.prototype;
+    Child.prototype.__super__ = Child.__super__ = Parent.prototype;
 
     return Child;
 };
+
+
+///////////////////////////////////////////////////////////////////////////////
+///
+///                            Exports
+///
+///////////////////////////////////////////////////////////////////////////////
+
+module.exports = ThinTree;
