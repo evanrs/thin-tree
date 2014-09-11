@@ -1,9 +1,20 @@
 'use strict';
+
 var _ = require('lodash');
 
 function Collection() {
-    this._collectionKey = 'children';
-    this[this._collectionKey] = [];
+    _.defaults(this, {
+        _key: 'collection'
+    });
+    this.setCollection();
+}
+
+Collection.prototype.setCollection = function(collection) {
+    return this[this._key] = collection || [];
+}
+
+Collection.prototype.getCollection = function() {
+    return this[this._key];
 }
 
 var collectionMethods = [
@@ -41,7 +52,7 @@ var collectionMethods = [
 _.each(collectionMethods, function(method) {
     Collection.prototype[method] = function() {
         var args = _.toArray(arguments);
-        args.unshift(this[this._collectionKey]);
+        args.unshift(this.getCollection());
         return _[method].apply(_, args);
     }
 });

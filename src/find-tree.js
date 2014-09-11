@@ -10,7 +10,7 @@ var FindTree = TT.extend({
     }
 });
 
-_.assign(FindTree.prototype, Collection.prototype);
+_.defaults(FindTree.prototype, Collection.prototype);
 
 _.each(['assign', 'defaults', 'has', 'omit', 'pick'], function(method) {
     FindTree.prototype[method] = function() {
