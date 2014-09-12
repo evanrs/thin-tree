@@ -23,7 +23,8 @@ describe('Thin Tree', function() {
         });
         expect(tree.name).to.equal("Eve");
         expect(tree.children).to.be.array;
-        expect(tree.children[0].name).to.equal("Alice")
+        expect(tree.children[0].name).to.equal("Alice");
+        expect(tree.hasChildren()).to.equal(true);
     });
 
     describe('Inheritance', function() {
@@ -87,7 +88,56 @@ describe('Thin Tree', function() {
             expect(second.getType()).to.equal("second:first");
             expect(second.__super__.getType()).to.equal("first");
         })
+    });
 
+    describe('Children', function() {
+        it('should report hasChildren correctly', function() {
+            var tree = new TT({
+                name: "Eve",
+                children: [
+                    {
+                        name: "Alice"
+                    }
+                ]
+            });
+
+            expect(tree.children).to.be.array;
+            expect(tree.hasChildren()).to.equal(true);
+            expect(tree.children[0].hasChildren()).to.equal(false)
+        });
+
+        it('should allow changing the recursive key', function() {
+            var tree = new TT({
+                name: "Eve",
+                _key: "eschers",
+                eschers: [
+                    {
+                        name: "Alice",
+                        eschers: [
+                            {
+                                _key: "schroedingers",
+                                name: "Turtle",
+                                schroedingers: [
+                                    {
+                                        name: "Cat"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            expect(tree.getChildren()).to.be.array;
+            expect(tree.hasChildren()).to.equal(true);
+            expect(tree.getChildren()[0].children).to.equal(undefined);
+            var turtle = tree.getChildren()[0].getChildren()[0];
+            expect(turtle.name).to.equal("Turtle");
+            expect(turtle.eschers).to.equal(undefined);
+            expect(turtle.hasChildren()).to.equal(true);
+            expect(turtle.getChildren()[0].name).to.equal("Cat");
+            expect(turtle.getChildren()[0].hasChildren()).to.equal(false);
+        });
     });
 });
 
