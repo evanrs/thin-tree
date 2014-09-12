@@ -43,6 +43,9 @@ ThinTree.prototype.setChildren = function(children) {
     return this[this._key] = children;
 }
 
+ThinTree.prototype.hasChildren = function(children) {
+    return !_.isEmpty(this.getChildren());
+}
 
 ThinTree.prototype.addChild = function(node, index) {
     if (_.isPlainObject(node)) {
@@ -56,7 +59,13 @@ ThinTree.prototype.addChildren = function() {
     // Creates node for each child element
     return _.map(this.getChildren(), function (node, index) {
         // Set the parent and root
-        node = _.defaults({ parent: this, root: this.root }, node);
+        node = _.defaults({
+            parent: this,
+            root: this.root,
+        }, node, {
+            // Propagate the recursive key, let children change it
+            _key: this._key
+        });
         // Pass new object with current node properties
         return this.addChild(node, index);
     // Pass in context as last parameter of function call
