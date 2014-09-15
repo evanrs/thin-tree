@@ -139,6 +139,70 @@ describe('Thin Tree', function() {
             expect(turtle.getChildren()[0].hasChildren()).to.equal(false);
         });
     });
+
+    describe('PreOrder Traverse', function() {
+        var complexTree, preOrderNames;
+
+        beforeEach(function() {
+           complexTree = new TT({
+                name: "R",
+                children: [{
+                    name: "RA"
+                }, {
+                    name: "RB",
+                    children: [{
+                        name: "RBA"
+                    },{
+                        name: "RBB"
+                    }]
+                }, {
+                    name: "RC"
+                }]
+            });
+            preOrderNames = ["R", "RA", "RB", "RBA", "RBB", "RC"]
+        });
+
+        it('should work for a single node', function() {
+            var tree = new TT({
+                name: "Foo",
+                children: []
+            });
+
+            expect(tree.preOrderTraverse()).to.be.array;
+            expect(tree.preOrderTraverse().length).to.equal(1);
+            expect(tree.preOrderNext()).to.be.equal(null);
+        });
+
+        it('should traverse a complex complexTree in pre order', function() {
+            expect(complexTree.preOrderTraverse()).to.be.array;
+            expect(complexTree.preOrderTraverse().length).to.equal(6);
+            expect(complexTree.preOrderNext().name).to.be.equal("RA");
+
+            var traverse = complexTree.preOrderTraverse();
+            expect(traverse.length).to.equal(6);
+            for (var i = 0; i < traverse.length; i++) {
+                expect(traverse[i].name).to.equal(preOrderNames[i]);
+            }
+        });
+
+        it('should be walkable with preOrderNext() from root', function() {
+            var nextNode = complexTree;
+            expect(nextNode.name).to.equal(preOrderNames[0]);
+
+            for (var i = 1; i < preOrderNames.length; i++) {
+                nextNode = nextNode.preOrderNext();
+                expect(nextNode.name)
+                    .to.equal(preOrderNames[i]);
+            }
+        });
+
+        it('should be walkable with preOrderNext() from child', function() {
+            var rbaNode = complexTree.getChildren()[1].getChildren()[0];
+            expect(rbaNode.preOrderNext().name).to.equal("RBB");
+            expect(rbaNode.preOrderNext()
+                          .preOrderNext().name).to.equal("RC");
+        });
+    })
 });
 
 describe('Find Tree', function() {
