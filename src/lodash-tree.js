@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var TT = require('thin-tree');
+var TT = require('./thin-tree');
 
 var LodashTree = TT.extend({});
 
