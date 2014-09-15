@@ -116,14 +116,9 @@ ThinTree.prototype.toJSON = function() {
     var obj = _(this)
         .omit('parent', 'root')
         .omit(function(value, key){
-            return !_.has(self, key);
+            return key[0] === '_' || !_.has(self, key);
         })
     .value();
-
-    obj.parent = this.parent ? this.parent.uuid : null;
-    if (_.isEmpty(obj.getChildren())) {
-        obj.setChildren(null);
-    }
 
     return obj;
 };
