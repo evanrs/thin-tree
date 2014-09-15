@@ -4,7 +4,7 @@
   "description": "Thin tree helps build recursive structures.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",
