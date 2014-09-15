@@ -202,6 +202,51 @@ describe('Thin Tree', function() {
             expect(rbaNode.preOrderNext()
                           .preOrderNext().name).to.equal("RC");
         });
+    });
+
+    describe("Serialization", function() {
+        var tree, flattened;
+
+        beforeEach(function() {
+            tree = new TT({
+                name: "Eve",
+                _key: "eschers",
+                eschers: [
+                    {
+                        name: "Alice",
+                        eschers: [
+                            {
+                                _key: "schroedingers",
+                                name: "Turtle",
+                                schroedingers: [
+                                    {
+                                        name: "Cat"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+            flattened = tree.flatten();
+        });
+
+        it("should remove properties prefixed with '_'", function(){
+            _.each(tree.flatten(), function(node){
+                var prefixedKeys = _(node.toJSON()).keys().filter(function(key){
+                    return key[0] === '_';
+                });
+                expect(prefixedKeys.size()).to.equal(0);
+            });
+        });
+
+        it("should remove circular references", function(){
+            _.each(flattened, function(node) {
+                var serialized = node.toJSON();
+                expect(serialized.root).to.be.undefined;
+                expect(serialized.parent).to.be.undefined;
+            })
+        })
     })
 });
 
