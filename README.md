@@ -1,4 +1,4 @@
-thin-tree
+thin-tree ![thin-tree build status.](https://circleci.com/gh/evanrs/thin-tree.png?circle-token=d2e80e8b778c36a3039678dd5aa73d5bf24b958d)
 =========
 Thin tree helps build recursive structures.
 

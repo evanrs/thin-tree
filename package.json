@@ -1,10 +1,10 @@
 {
   "name": "thin-tree",
-  "version": "0.0.4",
-  "description": "Thin tree helps build recursive structures.",
+  "version": "0.0.5",
+  "description": "Thin-tree helps build recursive tree structures.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": {
     "type": "git",

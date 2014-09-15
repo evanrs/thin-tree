@@ -139,25 +139,125 @@ describe('Thin Tree', function() {
             expect(turtle.getChildren()[0].hasChildren()).to.equal(false);
         });
     });
-});
 
-describe('Find Tree', function() {
-    var raw = {};
-    beforeEach(function() {
+    describe('PreOrder Traverse', function() {
+        var complexTree, preOrderNames;
 
+        beforeEach(function() {
+           complexTree = new TT({
+                name: "R",
+                children: [{
+                    name: "RA"
+                }, {
+                    name: "RB",
+                    children: [{
+                        name: "RBA"
+                    },{
+                        name: "RBB"
+                    }]
+                }, {
+                    name: "RC"
+                }]
+            });
+            preOrderNames = ["R", "RA", "RB", "RBA", "RBB", "RC"]
+        });
+
+        it('should work for a single node', function() {
+            var tree = new TT({
+                name: "Foo",
+                children: []
+            });
+
+            expect(tree.preOrderTraverse()).to.be.array;
+            expect(tree.preOrderTraverse().length).to.equal(1);
+            expect(tree.preOrderNext()).to.be.equal(null);
+        });
+
+        it('should traverse a complex complexTree in pre order', function() {
+            expect(complexTree.preOrderTraverse()).to.be.array;
+            expect(complexTree.preOrderTraverse().length).to.equal(6);
+            expect(complexTree.preOrderNext().name).to.be.equal("RA");
+
+            var traverse = complexTree.preOrderTraverse();
+            expect(traverse.length).to.equal(6);
+            for (var i = 0; i < traverse.length; i++) {
+                expect(traverse[i].name).to.equal(preOrderNames[i]);
+            }
+        });
+
+        it('should be walkable with preOrderNext() from root', function() {
+            var nextNode = complexTree;
+            expect(nextNode.name).to.equal(preOrderNames[0]);
+
+            for (var i = 1; i < preOrderNames.length; i++) {
+                nextNode = nextNode.preOrderNext();
+                expect(nextNode.name)
+                    .to.equal(preOrderNames[i]);
+            }
+        });
+
+        it('should be walkable with preOrderNext() from child', function() {
+            var rbaNode = complexTree.getChildren()[1].getChildren()[0];
+            expect(rbaNode.preOrderNext().name).to.equal("RBB");
+            expect(rbaNode.preOrderNext()
+                          .preOrderNext().name).to.equal("RC");
+        });
+
+        it('should be walkable with preOrderPrevious() from child', function() {
+            var rcNode = complexTree.getChildren()[2];
+            expect(rcNode.preOrderPrevious().name).to.equal("RBB");
+
+            expect(rcNode.preOrderPrevious()
+                          .preOrderPrevious().name).to.equal("RBA");
+
+            expect(rcNode.preOrderPrevious()
+                          .preOrderPrevious()
+                          .preOrderPrevious().name).to.equal("RB");
+        });
     });
 
-    it('should create a tree', function() {
-        var tree = new TT.Find({
-            name: "Eve",
-            children: [
-                {
-                    name: "Alice"
-                }
-            ]
+    describe("Serialization", function() {
+        var tree, flattened;
+
+        beforeEach(function() {
+            tree = new TT({
+                name: "Eve",
+                _key: "eschers",
+                eschers: [
+                    {
+                        name: "Alice",
+                        eschers: [
+                            {
+                                _key: "schroedingers",
+                                name: "Turtle",
+                                schroedingers: [
+                                    {
+                                        name: "Cat"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+            flattened = tree.flatten();
         });
-        expect(tree.name).to.equal("Eve");
-        expect(tree.children).to.be.array;
-        expect(tree.children[0].name).to.equal("Alice")
+
+        it("should remove properties prefixed with '_'", function(){
+            _.each(tree.flatten(), function(node){
+                var prefixedKeys = _(node.toJSON()).keys().filter(function(key){
+                    return key[0] === '_';
+                });
+                expect(prefixedKeys.size()).to.equal(0);
+            });
+        });
+
+        it("should remove circular references", function(){
+            _.each(flattened, function(node) {
+                var serialized = node.toJSON();
+                expect(serialized.root).to.be.undefined;
+                expect(serialized.parent).to.be.undefined;
+            })
+        });
     });
 });

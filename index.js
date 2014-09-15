@@ -1,3 +1,2 @@
-exports = module.exports = require('./src/thin-tree');
-
-exports.Find = require('./src/find-tree');
+module.exports = require('./src/thin-tree');
+module.exports.Lodash = require('./src/lodash-tree');
