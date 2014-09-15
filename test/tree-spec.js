@@ -202,6 +202,18 @@ describe('Thin Tree', function() {
             expect(rbaNode.preOrderNext()
                           .preOrderNext().name).to.equal("RC");
         });
+
+        it('should be walkable with preOrderPrevious() from child', function() {
+            var rcNode = complexTree.getChildren()[2];
+            expect(rcNode.preOrderPrevious().name).to.equal("RBB");
+
+            expect(rcNode.preOrderPrevious()
+                          .preOrderPrevious().name).to.equal("RBA");
+
+            expect(rcNode.preOrderPrevious()
+                          .preOrderPrevious()
+                          .preOrderPrevious().name).to.equal("RB");
+        });
     });
 
     describe("Serialization", function() {
@@ -246,8 +258,8 @@ describe('Thin Tree', function() {
                 expect(serialized.root).to.be.undefined;
                 expect(serialized.parent).to.be.undefined;
             })
-        })
-    })
+        });
+    });
 });
 
 describe('Find Tree', function() {

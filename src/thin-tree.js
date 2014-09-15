@@ -51,7 +51,7 @@ ThinTree.prototype.preOrderTraverse = function() {
     return this._preOrder = accumulator;
 }
 
-ThinTree.prototype.preOrderNext = function(node) {
+ThinTree.prototype.preOrderNext = function() {
     var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
     if (thisNodeIndex < this.root.preOrderTraverse().length - 1) {
         return this.root.preOrderTraverse()[thisNodeIndex + 1];
@@ -60,8 +60,17 @@ ThinTree.prototype.preOrderNext = function(node) {
     }
 }
 
+ThinTree.prototype.preOrderPrevious = function() {
+    var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
+    if (thisNodeIndex > 0) {
+        return this.root.preOrderTraverse()[thisNodeIndex - 1];
+    } else {
+        return null;
+    }
+}
+
 ThinTree.prototype.getChildren = function() {
-    return this[this._key] || [];
+    return this[this._key] ? this[this._key] : (this[this._key] = []);
 }
 
 
@@ -213,11 +222,6 @@ var __extends = function(proto, Parent) {
     return Child;
 };
 
-///////////////////////////////////////////////////////////////////////////////
-///
-///                            Utility
-///
-///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 ///
