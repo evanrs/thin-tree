@@ -51,7 +51,7 @@ ThinTree.prototype.preOrderTraverse = function() {
     return this._preOrder = accumulator;
 }
 
-ThinTree.prototype.preOrderNext = function(node) {
+ThinTree.prototype.preOrderNext = function() {
     var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
     if (thisNodeIndex < this.root.preOrderTraverse().length - 1) {
         return this.root.preOrderTraverse()[thisNodeIndex + 1];
