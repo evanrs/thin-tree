@@ -23,7 +23,6 @@ ThinTree.prototype.initialize = function(node) {
     this.addChildren();
 }
 
-
 ThinTree.prototype.flatten = function() {
     return this._flattened = this._flattened || _.reduce(
         this.getChildren(),
@@ -33,9 +32,45 @@ ThinTree.prototype.flatten = function() {
     );
 }
 
+ThinTree.prototype.preOrderTraverse = function() {
+    var accumulator = [];
+
+    // Memoize on a node
+    if (this._preOrder) {
+        return this._preOrder;
+    }
+
+    // Add this node
+    accumulator.push(this);
+
+    // Add children (recursively)
+    _.each(this.getChildren(), function(childNode) {
+        accumulator = accumulator.concat(childNode.preOrderTraverse());
+    })
+
+    return this._preOrder = accumulator;
+}
+
+ThinTree.prototype.preOrderNext = function() {
+    var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
+    if (thisNodeIndex < this.root.preOrderTraverse().length - 1) {
+        return this.root.preOrderTraverse()[thisNodeIndex + 1];
+    } else {
+        return null;
+    }
+}
+
+ThinTree.prototype.preOrderPrevious = function() {
+    var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
+    if (thisNodeIndex > 0) {
+        return this.root.preOrderTraverse()[thisNodeIndex - 1];
+    } else {
+        return null;
+    }
+}
 
 ThinTree.prototype.getChildren = function() {
-    return this[this._key];
+    return this[this._key] ? this[this._key] : (this[this._key] = []);
 }
 
 
@@ -47,13 +82,16 @@ ThinTree.prototype.hasChildren = function(children) {
     return !_.isEmpty(this.getChildren());
 }
 
+ThinTree.prototype.isRoot = function() {
+    return this.root === this;
+}
+
 ThinTree.prototype.addChild = function(node, index) {
     if (_.isPlainObject(node)) {
         node = new this.constructor(node); }
     index = _.isNumber(index) ? index : this.getChildren().length;
     return this.getChildren()[index] = node;
 }
-
 
 ThinTree.prototype.addChildren = function() {
     // Creates node for each child element
@@ -78,14 +116,9 @@ ThinTree.prototype.toJSON = function() {
     var obj = _(this)
         .omit('parent', 'root')
         .omit(function(value, key){
-            return !_.has(self, key);
+            return key[0] === '_' || !_.has(self, key);
         })
     .value();
-
-    obj.parent = this.parent ? this.parent.uuid : null;
-    if (_.isEmpty(obj.getChildren())) {
-        obj.setChildren(null);
-    }
 
     return obj;
 };
