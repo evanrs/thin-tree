@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var TT = require('thin-tree');
 
-var _Tree = TT.extend({});
+var LodashTree = TT.extend({});
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ var collectionMethods = [
     ];
 
 _.each(collectionMethods, function(method) {
-    _Tree.prototype[method] = function() {
+    LodashTree.prototype[method] = function() {
         var args = _.toArray(arguments);
         args.unshift(this.getChildren());
         return _[method].apply(_, args);
@@ -58,7 +58,7 @@ _.each(collectionMethods, function(method) {
 ///////////////////////////////////////////////////////////////////////////////
 
 _.each(['assign', 'defaults', 'has', 'omit', 'pick'], function(method) {
-    _Tree.prototype[method] = function() {
+    LodashTree.prototype[method] = function() {
         var args = _.toArray(arguments);
         args.unshift(this);
         return _[method].apply(_, args);
@@ -72,4 +72,4 @@ _.each(['assign', 'defaults', 'has', 'omit', 'pick'], function(method) {
 ///
 ///////////////////////////////////////////////////////////////////////////////
 
-module.exports = ThinTree;
+module.exports = LodashTree;
