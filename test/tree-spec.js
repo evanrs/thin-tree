@@ -140,24 +140,3 @@ describe('Thin Tree', function() {
         });
     });
 });
-
-describe('Find Tree', function() {
-    var raw = {};
-    beforeEach(function() {
-
-    });
-
-    it('should create a tree', function() {
-        var tree = new TT.Find({
-            name: "Eve",
-            children: [
-                {
-                    name: "Alice"
-                }
-            ]
-        });
-        expect(tree.name).to.equal("Eve");
-        expect(tree.children).to.be.array;
-        expect(tree.children[0].name).to.equal("Alice")
-    });
-});

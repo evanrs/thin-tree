@@ -1,2 +1,2 @@
 module.exports = require('./src/thin-tree');
-module.exports._ = require('./src/lodash-tree');
+module.exports.Lodash = require('./src/lodash-tree');
