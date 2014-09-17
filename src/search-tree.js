@@ -17,10 +17,12 @@ var SearchTree = {
         return this.search(query, this.getPreceding(wrap))
     },
 
-    searchSubtree: function(query, op) {
-        return this.reduce(function(targets, node) {
+    searchSubtree: function(query, operator, iterator) {
+        operator = operator || 'where';
+        iterator = iterator || 'reduce';
+        return this[iterator](function(targets, node) {
             return targets.concat(node.searchSubtree(query));
-        }, this[op](query))
+        }, this[operator](query))
     },
 
     findTree: function(query, source, op) {
@@ -35,18 +37,13 @@ var SearchTree = {
         return this.find(query, this.getPreceding(wrap))
     },
 
-    findSubtree: function(query, op) {
-        return this[op](query) || this.reduce(function(target, node) {
-            return target || node.findSubtree(query);
-        }, null)
-    },
-
-    findSubtree: function(query, op, iterator, callback) {
-        return this[op](query) || this[iterator](function(target, node) {
+    findSubtree: function(query, operator, iterator) {
+        operator = operator || 'find';
+        iterator = iterator || 'reduce';
+        return this[operator](query) || this[iterator](function(target, node) {
             return target || node.findSubtree(query);
         }, null);
     },
-
 
     getPreceding: function(wrap) {
         var preorder = this.root.preOrderTraverse().reverse();
@@ -65,10 +62,6 @@ var SearchTree = {
     }
 
 }
-
-SearchTree.recurse(function(node){
-    return node
-})
 
 
 ///////////////////////////////////////////////////////////////////////////////
