@@ -23,6 +23,10 @@ ThinTree.prototype.initialize = function(node) {
     this.addChildren();
 }
 
+ThinTree.prototype.isRoot = function() {
+    return this.root === this;
+}
+
 ThinTree.prototype.flatten = function() {
     return this._flattened = this._flattened || _.reduce(
         this.getChildren(),
@@ -51,22 +55,24 @@ ThinTree.prototype.preOrderTraverse = function() {
     return this._preOrder = accumulator;
 }
 
+ThinTree.prototype.preOrderFollowing = function() {
+    var order = this.root.preOrderTraverse();
+    var index = order.indexOf(this);
+    return index < order.length - 1 ? order.slice(index + 1) : [];
+}
+
 ThinTree.prototype.preOrderNext = function() {
-    var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
-    if (thisNodeIndex < this.root.preOrderTraverse().length - 1) {
-        return this.root.preOrderTraverse()[thisNodeIndex + 1];
-    } else {
-        return null;
-    }
+    return this.preOrderFollowing()[0] || null;
+}
+
+ThinTree.prototype.preOrderPreceding = function() {
+    var order = this.root.preOrderTraverse();
+    var index = order.indexOf(this);
+    return index > 0 ? order.slice(index - 1) : [];
 }
 
 ThinTree.prototype.preOrderPrevious = function() {
-    var thisNodeIndex = this.root.preOrderTraverse().indexOf(this);
-    if (thisNodeIndex > 0) {
-        return this.root.preOrderTraverse()[thisNodeIndex - 1];
-    } else {
-        return null;
-    }
+    return this.preOrderPreceding()[0] || null
 }
 
 ThinTree.prototype.getChildren = function() {
@@ -80,10 +86,6 @@ ThinTree.prototype.setChildren = function(children) {
 
 ThinTree.prototype.hasChildren = function(children) {
     return !_.isEmpty(this.getChildren());
-}
-
-ThinTree.prototype.isRoot = function() {
-    return this.root === this;
 }
 
 ThinTree.prototype.addChild = function(node, index) {
