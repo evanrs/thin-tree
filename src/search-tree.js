@@ -1,75 +1,39 @@
+var _ = require('lodash');
+
 var TT = require('./thin-tree');
 
-
-var SearchTree = {
-
-    searchTree: function(query, op, source) {
-        op = op || 'where';
-        source = source || this.preOrderTraverse();
-        return _[op](source, query);
+var SearchTree = TT.extend({
+    initialize: function() {
+        var result = SearchTree.__super__.initialize.apply(this, arguments);
+        this._ = new Branch(this)
+        return result;
     },
 
-    searchFollowing: function(query, wrap) {
-        return this.search(query, this.getFollowing(wrap));
+    matches: function(query, operator) {
+        operator = operator || 'find';
+        var match = _[operator]([this], query);
+        return _.isEmpty(match) ? void 0 : match
     },
 
-    searchPreceding: function(query, wrap) {
-        return this.search(query, this.getPreceding(wrap))
-    },
-
-    searchSubtree: function(query, operator, iterator) {
-        operator = operator || 'where';
-        iterator = iterator || 'reduce';
-        return this[iterator](function(targets, node) {
-            return targets.concat(node.searchSubtree(query));
-        }, this[operator](query))
-    },
-
-    findTree: function(query, source, op) {
-        this.search(query, null, 'find');
-    },
-
-    findFollowing: function(query, wrap) {
-        return this.find(query, this.getFollowing(wrap));
-    },
-
-    findPreceding: function(query, wrap) {
-        return this.find(query, this.getPreceding(wrap))
-    },
-
-    findSubtree: function(query, operator, iterator) {
+    find: function(query, operator, iterator, iterable) {
         operator = operator || 'find';
         iterator = iterator || 'reduce';
-        return this[operator](query) || this[iterator](function(target, node) {
-            return target || node.findSubtree(query);
-        }, null);
+        return this.matches(query, operator) ||
+            _[iterator](this.getChildren(), function(target, node) {
+                return target || node.find(query, operator, iterator);
+            }, null);
     },
 
-    getPreceding: function(wrap) {
-        var preorder = this.root.preOrderTraverse().reverse();
-        var index = preorder.indexOf(this);
-        return preorder.slice(index + 1).concat(
-            wrap ? preorder.slice(0, index) : []
-        );
-    },
-
-    getFollowing:  function(wrap) {
-        var preorder = this.root.preOrderTraverse();
-        var index = preorder.indexOf(this);
-        return preorder.slice(index + 1).concat(
-            wrap ? preorder.slice(0, index) : []
+    search: function(query, operator, iterator) {
+        operator = operator || 'find';
+        iterator = iterator || 'reduce';
+        return this.matches(query, operator).concat(
+            this._[iterator](this.getChildren(), function(target, node) {
+                return target.concat(node.search(query, operator, iterator))
+            }, [])
         );
     }
-
-}
-
-
-///////////////////////////////////////////////////////////////////////////////
-///
-///                         Collection Methods
-///
-///////////////////////////////////////////////////////////////////////////////
-
+})
 
 var collectionMethods = [
         'chain',
@@ -77,9 +41,9 @@ var collectionMethods = [
          * Collection Methods
          */
         'at', 'contains', 'countBy', 'every', 'filter', 'find', 'findLast',
-        'forEach', 'forEachRight', 'groupBy', 'indexBy', 'invoke', 'map',
-        'max', 'min', 'pluck', 'reduce', 'reduceRight', 'reject', 'sample',
-        'shuffle', 'size', 'some', 'sortBy', 'toArray', 'where',
+        'each', 'forEach', 'forEachRight', 'groupBy', 'indexBy', 'invoke',
+        'map', 'max', 'min', 'pluck', 'reduce', 'reduceRight', 'reject',
+        'sample', 'shuffle', 'size', 'some', 'sortBy', 'toArray', 'where',
         /**
          * Object method
          */
@@ -103,30 +67,17 @@ var collectionMethods = [
          */
     ];
 
+var Branch = function(node) {
+    this.getChildren = _.bind(node.getChildren, node)
+}
+
 _.each(collectionMethods, function(method) {
-    SearchTree[method] = function() {
+    Branch.prototype[method] = function() {
         var args = _.toArray(arguments);
         args.unshift(this.getChildren());
         return _[method].apply(_, args);
     }
 });
-
-
-///////////////////////////////////////////////////////////////////////////////
-///
-///                         Attribute Methods
-///
-///////////////////////////////////////////////////////////////////////////////
-
-
-_.each(['assign', 'defaults', 'has', 'omit', 'pick'], function(method) {
-    SearchTree[method] = function() {
-        var args = _.toArray(arguments);
-        args.unshift(this);
-        return _[method].apply(_, args);
-    }
-});
-
 
 ///////////////////////////////////////////////////////////////////////////////
 ///
@@ -135,5 +86,5 @@ _.each(['assign', 'defaults', 'has', 'omit', 'pick'], function(method) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-module.exports = TT.extend(SearchTree);
+module.exports = SearchTree;
 
