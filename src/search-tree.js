@@ -1,11 +1,12 @@
 var _ = require('lodash');
 
 var TT = require('./thin-tree');
+var LodashWrapper = require('./lodash-wrapper');
 
 var SearchTree = TT.extend({
     initialize: function() {
         var result = SearchTree.__super__.initialize.apply(this, arguments);
-        this._ = new Branch(this)
+        this._ = new LodashWrapper(this)
         return result;
     },
 
@@ -33,51 +34,8 @@ var SearchTree = TT.extend({
             }, [])
         );
     }
-})
-
-var collectionMethods = [
-        'chain',
-        /**
-         * Collection Methods
-         */
-        'at', 'contains', 'countBy', 'every', 'filter', 'find', 'findLast',
-        'each', 'forEach', 'forEachRight', 'groupBy', 'indexBy', 'invoke',
-        'map', 'max', 'min', 'pluck', 'reduce', 'reduceRight', 'reject',
-        'sample', 'shuffle', 'size', 'some', 'sortBy', 'toArray', 'where',
-        /**
-         * Object method
-         */
-        'transform',
-        /**
-         * Array methods, sorted by type of operation
-         */
-        'indexOf', 'lastIndexOf',
-        'findIndex', 'findLastIndex',
-        'first', 'last',
-        'initial', 'rest',
-        'difference', 'intersection', 'union', 'uniq', 'without', 'xor',
-        'sortedIndex',
-        /**
-         * Not applicable or destructive
-            'flatten',
-            'range',
-            'compact',
-            'pull', 'remove',
-            'zip', 'zipObject'
-         */
-    ];
-
-var Branch = function(node) {
-    this.getChildren = _.bind(node.getChildren, node)
-}
-
-_.each(collectionMethods, function(method) {
-    Branch.prototype[method] = function() {
-        var args = _.toArray(arguments);
-        args.unshift(this.getChildren());
-        return _[method].apply(_, args);
-    }
 });
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///
