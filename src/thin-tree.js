@@ -92,6 +92,8 @@ ThinTree.prototype.addChild = function(node, index) {
     if (_.isPlainObject(node)) {
         node = new this.constructor(node); }
     index = _.isNumber(index) ? index : this.getChildren().length;
+    node.parent = this;
+    node.root = this.root;
     return this.getChildren()[index] = node;
 }
 
