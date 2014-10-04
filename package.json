@@ -1,6 +1,6 @@
 {
   "name": "thin-tree",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Thin-tree helps build recursive tree structures.",
   "main": "index.js",
   "scripts": {
