@@ -1,11 +1,12 @@
 {
   "name": "thin-tree",
-  "version": "0.0.7",
+  "version": "0.0.8add ",
   "description": "Thin-tree helps build recursive tree structures.",
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha"
   },
+  "files": ["./src"],
   "repository": {
     "type": "git",
     "url": "https://github.com/evanrs/thin-tree.git"
@@ -19,6 +20,9 @@
   "dependencies": {
     "lodash": "^2.4.1"
   },
+  "bundledDependencies": [
+    "lodash"
+  ],
   "devDependencies": {
     "chai": "^1.9.1",
     "gulp": "^3.8.7",
