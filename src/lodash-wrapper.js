@@ -52,6 +52,13 @@ var collectionMethods = [
 _.each(collectionMethods, function(method) {
     LodashWrapper.prototype[method] = function() {
         var args = _.toArray(arguments);
+        var node = this.getNode();
+        var key = args[0]
+        if (_.isString(key)) {
+            args[0] = function (node) {
+                _.result(node, key)
+            }
+        }
         args.unshift(this.getNode().getChildren());
         return _[method].apply(_, args);
     }
