@@ -26,10 +26,10 @@ var SearchTree = TT.extend({
     },
 
     search: function(query, operator, iterator) {
-        operator = operator || 'find';
+        operator = operator || 'where';
         iterator = iterator || 'reduce';
         return (this.matches(query, operator) || []).concat(
-            this._[iterator](this.getChildren(), function(target, node) {
+            _[iterator](this.getChildren(), function(target, node) {
                 return target.concat(node.search(query, operator, iterator))
             }, [])
         );
