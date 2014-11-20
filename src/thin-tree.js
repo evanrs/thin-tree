@@ -36,6 +36,16 @@ ThinTree.prototype.flatten = function() {
     );
 }
 
+ThinTree.prototype.getAncestors = function getAncestors () {
+    var ancestors = [];
+    var parent = this.parent;
+    while (parent) {
+        ancestors.push(parent);
+        parent = parent.parent;
+    }
+    return ancestors;
+}
+
 ThinTree.prototype.preOrderTraverse = function() {
     var accumulator = [];
 
