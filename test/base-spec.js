@@ -140,6 +140,38 @@ describe('Thin Tree', function() {
         });
     });
 
+    describe('ancestors', function () {
+        var tree;
+        var childRBBC;
+        beforeEach(function() {
+            tree = new TT({
+                name: "R",
+                children: [
+                    { name: "RA" },
+                    { name: "RB",
+                        children: [
+                            { name: "RBA" },
+                            { name: "RBB",
+                                children: [
+                                    { name: "RBBC" } ]} ]},
+                    { name: "RC"} ]}
+            );
+            childRBBC = tree.children[1].children[1].children[0];
+        });
+
+        it("creates array of ancestors", function () {
+            var ancestors;
+            ancestors = tree.getAncestors();
+            expect(ancestors.length).to.equal(0);
+
+            ancestors = childRBBC.getAncestors();
+            expect(ancestors.length).to.equal(3);
+            expect(ancestors[0].name).to.equal('RBB')
+            expect(ancestors[1].name).to.equal('RB')
+            expect(ancestors[2].name).to.equal('R')
+        })
+    });
+
     describe('PreOrder Traverse', function() {
         var complexTree, preOrderNames;
 
