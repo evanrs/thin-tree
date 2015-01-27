@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/evanrs/thin-tree",
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^3.0.0"
   },
   "bundledDependencies": [
     "lodash"

@@ -26,7 +26,7 @@ var SearchTree = TT.extend({
     },
 
     search: function(query, operator, iterator) {
-        operator = operator || 'where';
+        operator = operator || 'filter';
         iterator = iterator || 'reduce';
         return (this.matches(query, operator) || []).concat(
             _[iterator](this.getChildren(), function(target, node) {
