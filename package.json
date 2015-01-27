@@ -1,6 +1,6 @@
 {
   "name": "thin-tree",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Thin-tree helps build recursive tree structures.",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/evanrs/thin-tree",
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^3.0.0"
   },
   "bundledDependencies": [
     "lodash"
