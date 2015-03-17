@@ -246,6 +246,26 @@ describe('Thin Tree', function() {
                           .preOrderPrevious()
                           .preOrderPrevious().name).to.equal("RB");
         });
+
+        it('should return the preceding nodes with preOrderPreceding() from child', function() {
+
+            var rbaNode = _.find(complexTree.preOrderTraverse(), {name: "RBB"});
+            var preceding = _(rbaNode.preOrderPreceding());
+
+            expect(preceding.size()).to.equal(4)
+            expect(preceding.first().name).to.equal("RBA");
+            expect(preceding.last().name).to.equal("R");
+        });
+
+        it('should return the following nodes with preOrderPreceding() from child', function() {
+
+            var rbaNode = _.find(complexTree.preOrderTraverse(), {name: "RBA"});
+            var preceding = _(rbaNode.preOrderFollowing());
+
+            expect(preceding.size()).to.equal(2)
+            expect(preceding.first().name).to.equal("RBB");
+            expect(preceding.last().name).to.equal("RC");
+        });
     });
 
     describe("Serialization", function() {

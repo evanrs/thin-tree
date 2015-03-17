@@ -78,7 +78,7 @@ ThinTree.prototype.preOrderNext = function() {
 ThinTree.prototype.preOrderPreceding = function() {
     var order = this.root.preOrderTraverse();
     var index = order.indexOf(this);
-    return index > 0 ? order.slice(index - 1) : [];
+    return index > 0 ? order.slice(0, index).reverse() : [];
 }
 
 ThinTree.prototype.preOrderPrevious = function() {
