@@ -11,6 +11,20 @@
     "url": "https://github.com/evanrs/thin-tree.git"
   },
   "author": "Evan Schneider",
+  "contributors": [
+    {
+      "email": "learykara@gmail.com",
+      "name": "Kara Leary"
+    },
+    {
+      "email": "olex@thinkful.com",
+      "name": "Olex Ponomarenko"
+    },
+    {
+      "email": "evanrs@gmail.com",
+      "name": "Evan Schneider"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/evanrs/thin-tree/issues"
