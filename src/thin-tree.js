@@ -133,6 +133,10 @@ ThinTree.prototype.toJSON = function() {
             return key[0] === '_' || !_.has(self, key);
         })
     .value();
+    
+    obj.children = obj.children.map(function (child) {
+        return child.toJSON();
+    });
 
     return obj;
 };
